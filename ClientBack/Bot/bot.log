@@ -1,0 +1,9 @@
+2025-05-24 21:46:31,007 - __main__ - INFO - Starting bot...
+2025-05-24 21:46:31,008 - aiogram.dispatcher - INFO - Start polling
+2025-05-24 21:46:31,287 - aiogram.dispatcher - INFO - Run polling for bot @THC_Kuban_bot id=8087352905 - 'THC_Kuban_bot'
+2025-05-24 21:46:53,571 - aiogram.event - INFO - Update id=375784633 is not handled. Duration 15 ms by bot id=8087352905
+2025-05-24 21:46:59,621 - aiogram.event - INFO - Update id=375784634 is not handled. Duration 0 ms by bot id=8087352905
+2025-05-24 21:47:11,063 - aiogram.event - INFO - Update id=375784635 is not handled. Duration 0 ms by bot id=8087352905
+2025-05-24 21:47:22,706 - aiogram.dispatcher - INFO - Polling stopped for bot @THC_Kuban_bot id=8087352905 - 'THC_Kuban_bot'
+2025-05-24 21:47:22,744 - aiogram.dispatcher - INFO - Polling stopped
+2025-05-24 21:47:23,006 - __main__ - INFO - Bot finally stopped

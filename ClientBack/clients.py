@@ -99,6 +99,82 @@ def add_client(client: Client, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail=str(e))
     return {"status": "created", "client": db_client}
 
+@app.get("/clients/export")
+def export_all_clients(db: Session = Depends(get_db)):
+    clients = db.query(ClientDB).all()
+    result = []
+    for client in clients:
+        result.append({
+            "accountId": client.account_id,
+            "isChecked": client.is_checked,
+            "isCommercial": client.is_commercial,
+            "address": client.address,
+            "buildingType": client.building_type,
+            "roomsCount": client.rooms_count,
+            "residentsCount": client.residents_count,
+            "totalArea": client.total_area,
+            "consumption": client.consumption,
+            "priority": client.priority
+        })
+    return {"clients": result}
+
+@app.get("/clients/short")
+def get_clients_short(db: Session = Depends(get_db)):
+    clients = db.query(ClientDB).all()
+    result = []
+    for client in clients:
+        result.append({
+            "accountId": client.account_id,
+            "address": client.address,
+            "buildingType": client.building_type,
+            "roomsCount": client.rooms_count,
+            "residentsCount": client.residents_count,
+            "totalArea": client.total_area,
+            "consumption": client.consumption,
+            "isCommercial": client.is_commercial
+        })
+    return {"clients": result}
+
+
+
+@app.post("/clients/import")
+def import_client(data: Dict[str, Any], db: Session = Depends(get_db)):
+    # Преобразование: из camelCase в snake_case
+    field_mapping = {
+        "accountId": "account_id",
+        "isChecked": "is_checked",
+        "isCommercial": "is_commercial",
+        "address": "address",
+        "buildingType": "building_type",
+        "roomsCount": "rooms_count",
+        "residentsCount": "residents_count",
+        "totalArea": "total_area",
+        "consumption": "consumption",
+        "priority": "priority"
+    }
+
+    db_data = {}
+    for key, value in data.items():
+        if key not in field_mapping:
+            continue
+        db_key = field_mapping[key]
+        db_data[db_key] = value
+
+    if "account_id" not in db_data:
+        raise HTTPException(status_code=400, detail="Missing required field: accountId")
+
+    db_client = ClientDB(**db_data)
+
+    db.add(db_client)
+    try:
+        db.commit()
+        db.refresh(db_client)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=400, detail=f"Error during import: {str(e)}")
+
+    return {"status": "imported", "client": db_client}
+
 
 # Удалить клиента по account_id
 @app.delete("/clients/{account_id}")
@@ -158,6 +234,24 @@ def patch_client(account_id: int, fields: Dict[str, Any], db: Session = Depends(
     db.commit()
     db.refresh(db_client)
     return {"status": "patched", "client": db_client}
+
+
+@app.get("/clients/by-commercial")
+def get_clients_by_commercial(is_commercial: bool, db: Session = Depends(get_db)):
+    clients = db.query(ClientDB).filter(ClientDB.is_commercial == is_commercial).all()
+    result = []
+    for client in clients:
+        result.append({
+            "accountId": client.account_id,
+            "address": client.address,
+            "buildingType": client.building_type,
+            "roomsCount": client.rooms_count,
+            "residentsCount": client.residents_count,
+            "totalArea": client.total_area,
+            "consumption": client.consumption,
+            "isCommercial": client.is_commercial
+        })
+    return {"clients": result}
 
 
 @app.post("/clients/batch")
