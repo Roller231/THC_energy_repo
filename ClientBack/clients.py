@@ -13,20 +13,20 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 
-# Модель таблицы Clients
 class ClientDB(Base):
     __tablename__ = "clients"
 
     account_id = Column(Integer, primary_key=True, index=True)
     is_checked = Column(String, nullable=True)
-    is_commercial = Column(Boolean, nullable=True)  # Изменено на nullable=True
-    address = Column(String, nullable=True)  # Изменено на nullable=True
-    building_type = Column(String, nullable=True)  # Изменено на nullable=True
-    rooms_count = Column(Integer, nullable=True)  # Изменено на nullable=True
-    residents_count = Column(Integer, nullable=True)  # Изменено на nullable=True
-    total_area = Column(Float, nullable=True)  # Изменено на nullable=True
-    consumption = Column(JSON, nullable=True)  # Изменено на nullable=True
+    is_commercial = Column(Boolean, nullable=False, default=False)  # <-- изменено здесь
+    address = Column(String, nullable=True)
+    building_type = Column(String, nullable=True)
+    rooms_count = Column(Integer, nullable=True)
+    residents_count = Column(Integer, nullable=True)
+    total_area = Column(Float, nullable=True)
+    consumption = Column(JSON, nullable=True)
     priority = Column(Text, nullable=True)
+
 
 
 # Pydantic-модель для валидации данных
