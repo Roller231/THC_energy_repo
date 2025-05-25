@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:9.3
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    depends_on:
+      - db
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    environment:
+      DATABASE_URL: postgres://user:password@db:5432/mydb
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5173:4173" # порт Vite preview
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

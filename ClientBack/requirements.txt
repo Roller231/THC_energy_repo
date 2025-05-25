@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+tensorflow
+psycopg2-binary
+aiohttp
+python-telegram-bot
+pandas
+openpyxl
+aiogram
+scikit-learn
+
+sqlalchemy
